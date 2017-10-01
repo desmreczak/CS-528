@@ -12,6 +12,7 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
@@ -27,6 +28,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.UUID;
 
@@ -48,6 +51,7 @@ public class CrimeFragment extends Fragment {
     private Button mSuspectButton;
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
+    private Button galleryButton;
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -161,7 +165,7 @@ public class CrimeFragment extends Fragment {
         mPhotoButton.setEnabled(canTakePhoto);
 
         if (canTakePhoto) {
-            Uri uri = Uri.fromFile(mPhotoFile);
+            Uri uri =  FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName() + ".my.package.name.provider", mPhotoFile);
             captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         }
 
@@ -171,6 +175,21 @@ public class CrimeFragment extends Fragment {
                 startActivityForResult(captureImage, REQUEST_PHOTO);
             }
         });
+
+        galleryButton = (Button) v.findViewById(R.id.gallery_button);
+        galleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(GalleryViewActivity.Companion.newIntent(CrimeFragment.this.getActivity(), new ArrayList<File>(){{
+                    add(mPhotoFile);
+                    add(mPhotoFile);
+                    add(mPhotoFile);
+                    add(mPhotoFile);
+                    add(mPhotoFile);
+                }}));
+            }
+        });
+
 
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
         updatePhotoView();
