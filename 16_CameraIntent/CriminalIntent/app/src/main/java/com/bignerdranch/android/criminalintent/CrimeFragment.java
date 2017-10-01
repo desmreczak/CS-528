@@ -176,6 +176,9 @@ public class CrimeFragment extends Fragment {
             }
         });
 
+        /**
+         * to display a bunch of image, create an intent with GalleryViewActivity.Companion.newIntent(activity, <an arraylist of image files>)
+         */
         galleryButton = (Button) v.findViewById(R.id.gallery_button);
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
