@@ -78,6 +78,7 @@ public class CrimeFragment extends Fragment {
                 .updateCrime(mCrime);
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
