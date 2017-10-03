@@ -45,7 +45,7 @@ class GalleryViewActivity : AppCompatActivity() {
     var recyclerView: RecyclerView? = null
     var recyclerAdapter: GalleryAdapter? = null
     var layoutManager: RecyclerView.LayoutManager? = null
-
+    var detector : FaceDetector? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery_view)
@@ -64,13 +64,12 @@ class GalleryViewActivity : AppCompatActivity() {
             }
             val detector = FaceDetector.Builder(this@GalleryViewActivity)
                     .build()
-            val arr = Array<SparseArray<Face>>(bitmapArray.size){ SparseArray()}
+            this@GalleryViewActivity.detector = detector
             bitmapArray.forEachIndexed  { index, b ->
                 launch(CommonPool) {
-                    arr.set(index,detector.detect(Frame.Builder().setBitmap(b).build()))
                     Log.d("width of image", "${b.width}")
                     (recyclerView?.getChildAt(index) as? FaceDetectImageView)?.apply {
-                        updateFaces(arr.get(index), b.width.toFloat(), b.height.toFloat())
+                        updateFaces(detector.detect(Frame.Builder().setBitmap(b).build()), b.width.toFloat(), b.height.toFloat())
                     }
                 }
             }
@@ -79,7 +78,10 @@ class GalleryViewActivity : AppCompatActivity() {
 
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        detector?.release()
+    }
 
     private fun updatePhotoView(mPhotoFile: File) = PictureUtils.getScaledBitmap(mPhotoFile.getPath(), this)
 
