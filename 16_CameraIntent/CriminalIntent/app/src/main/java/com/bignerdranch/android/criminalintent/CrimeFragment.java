@@ -53,6 +53,8 @@ public class CrimeFragment extends Fragment {
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
     private Button galleryButton;
+    private CheckBox faceCheckbox;
+    private boolean noDetect = false;
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -208,13 +210,24 @@ public class CrimeFragment extends Fragment {
                     Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Adding Photos");
                     add(mPhotoFile);
                     add(mPhotoFile);
-                }}));
+                }}, noDetect));
             }
         });
 
         Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Before Update ImageView");
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
         updatePhotoView();
+
+        faceCheckbox = (CheckBox) v.findViewById(R.id.face_checkbox);
+        faceCheckbox.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                noDetect = !noDetect;
+            }
+        });
+
+
 
         return v;
     }
