@@ -59,6 +59,7 @@ public class CrimeFragment extends Fragment {
     private Button galleryButton;
     private CheckBox faceCheckbox;
     private boolean noDetect = false;
+    public static List<Bitmap> bm = new ArrayList<>();
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -216,6 +217,7 @@ public class CrimeFragment extends Fragment {
                     bmp = BitmapFactory.decodeByteArray(allPhotos.get(i).getImage(), 0, allPhotos.get(i).getImage().length);
                     bitmaps.add(bmp);
                 }
+                bm = bitmaps;
                 Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- In Photo Button Listener");
                 startActivity(GalleryViewActivity.Companion.newIntent(CrimeFragment.this.getActivity(), bitmaps, noDetect));
             }
