@@ -317,10 +317,11 @@ public class CrimeFragment extends Fragment {
             Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- ImageView set from the bitmap");
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity());
-            mPhotoView.setImageBitmap(bitmap);
+            if(((BitmapDrawable)mPhotoView.getDrawable()).getBitmap() == null) {
+                mPhotoView.setImageBitmap(bitmap);
+            }
 
             Photo photo = new Photo();
-            ((BitmapDrawable)mPhotoView.getDrawable()).getBitmap();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
             byte[] imageInByte = baos.toByteArray();
