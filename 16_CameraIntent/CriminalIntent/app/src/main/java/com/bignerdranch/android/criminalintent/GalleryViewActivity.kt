@@ -36,8 +36,7 @@ class GalleryViewActivity : AppCompatActivity() {
         private val IS_FD = "IS_FD"
         fun newIntent(fromActivity: Activity, files: List<Bitmap>, isFD: Boolean): Intent {
             val intent = Intent(fromActivity, GalleryViewActivity::class.java)
-            return intent.putExtra(FILES, files.toTypedArray())
-                    .putExtra(IS_FD, isFD)
+            return intent.putExtra(IS_FD, isFD)
         }
 
     }
@@ -57,7 +56,7 @@ class GalleryViewActivity : AppCompatActivity() {
         recyclerView?.layoutManager = layoutManager
         recyclerAdapter = GalleryAdapter(mutableListOf())
         recyclerView?.adapter = recyclerAdapter
-        val files = intent.getParcelableArrayExtra(FILES) as Array<Bitmap>
+        val files = CrimeFragment.bm
         val shouldDetect = intent.getBooleanExtra(IS_FD, false)
         val detector = FaceDetector.Builder(this@GalleryViewActivity)
                 .build()
