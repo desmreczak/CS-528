@@ -46,6 +46,7 @@ class GalleryViewActivity : AppCompatActivity() {
     var recyclerAdapter: GalleryAdapter? = null
     var layoutManager: RecyclerView.LayoutManager? = null
     var detector : FaceDetector? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_gallery_view)
