@@ -9,7 +9,7 @@ import com.bignerdranch.android.criminalintent.database.CrimeDbSchema.PhotoTable
 
 public class CrimeBaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "CrimeBaseHelper";
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
     private static final String DATABASE_NAME = "crimeBase.db";
 
     public CrimeBaseHelper(Context context) {
