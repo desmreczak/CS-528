@@ -76,7 +76,6 @@ public class CrimeFragment extends Fragment {
         UUID crimeId = (UUID) getArguments().getSerializable(ARG_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
         mPhotoFile = CrimeLab.get(getActivity()).getPhotoFile(mCrime);
-        Log.d("DEBUG", "CrimeFragment.java -- onCreate()");
     }
 
     @Override
@@ -92,7 +91,6 @@ public class CrimeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_crime, container, false);
-        Log.d("DEBUG", "CrimeFragment.java -- onCreateView()");
 
         mTitleField = (EditText) v.findViewById(R.id.crime_title);
         mTitleField.setText(mCrime.getTitle());
@@ -113,13 +111,11 @@ public class CrimeFragment extends Fragment {
             }
         });
 
-        Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Before Date Button Listener");
         mDateButton = (Button) v.findViewById(R.id.crime_date);
         updateDate();
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- In Date Button Listener");
                 FragmentManager manager = getFragmentManager();
                 DatePickerFragment dialog = DatePickerFragment
                         .newInstance(mCrime.getDate());
@@ -128,22 +124,18 @@ public class CrimeFragment extends Fragment {
             }
         });
 
-        Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Before Solved Checkbox");
         mSolvedCheckbox = (CheckBox) v.findViewById(R.id.crime_solved);
         mSolvedCheckbox.setChecked(mCrime.isSolved());
         mSolvedCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- In Solved Checkbox listener");
                 mCrime.setSolved(isChecked);
             }
         });
 
-        Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Before Crime Report Button");
         mReportButton = (Button)v.findViewById(R.id.crime_report);
         mReportButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- In Crime Report Button Listener");
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
                 i.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
@@ -155,13 +147,11 @@ public class CrimeFragment extends Fragment {
             }
         });
 
-        Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Before Crime Suspect Button");
         final Intent pickContact = new Intent(Intent.ACTION_PICK,
                 ContactsContract.Contacts.CONTENT_URI);
         mSuspectButton = (Button)v.findViewById(R.id.crime_suspect);
         mSuspectButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- In Crime Suspect Button Listener");
                 startActivityForResult(pickContact, REQUEST_CONTACT);
             }
         });
@@ -176,28 +166,21 @@ public class CrimeFragment extends Fragment {
             mSuspectButton.setEnabled(false);
         }
 
-        Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Before Photo Button");
         mPhotoButton = (ImageButton) v.findViewById(R.id.crime_camera);
         final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Before Setting can take photo");
         boolean canTakePhoto = mPhotoFile != null &&
                 captureImage.resolveActivity(packageManager) != null;
         mPhotoButton.setEnabled(canTakePhoto);
 
-        Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Before can take photo");
         if (canTakePhoto) {
-            Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Before URI is set");
             Uri uri =  FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName() + ".my.package.name.provider", mPhotoFile);
-            Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Before Capture Image");
             captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         }
 
-        Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Before Photo Button Listener");
         mPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- In Photo Button Listener");
                 startActivityForResult(captureImage, REQUEST_PHOTO);
             }
         });
@@ -205,7 +188,6 @@ public class CrimeFragment extends Fragment {
         /**
          * to display a bunch of image, create an intent with GalleryViewActivity.Companion.newIntent(activity, <an arraylist of image files>)
          */
-        Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Before Gallery Button");
         galleryButton = (Button) v.findViewById(R.id.gallery_button);
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,12 +200,10 @@ public class CrimeFragment extends Fragment {
                     bitmaps.add(bmp);
                 }
                 bm = bitmaps;
-                Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- In Photo Button Listener");
                 startActivity(GalleryViewActivity.Companion.newIntent(CrimeFragment.this.getActivity(), bitmaps, noDetect));
             }
         });
 
-        Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Before Update ImageView");
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
         updatePhotoView();
 
@@ -311,15 +291,12 @@ public class CrimeFragment extends Fragment {
     }
 
     private void updatePhotoView() {
-        Log.d("DEBUG", "CrimeFragment.java -- updatePhotoView()-- Before ImagView is set");
         if (mPhotoFile == null || !mPhotoFile.exists()) {
-            Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- ImageView set to NULL");
             mPhotoView.setImageDrawable(null);
         } else {
-            Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- ImageView set from the bitmap");
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity());
-            if(((BitmapDrawable)mPhotoView.getDrawable()) == null) {
+            if((mPhotoView.getDrawable()) == null) {
                 mPhotoView.setImageBitmap(bitmap);
             }
 
