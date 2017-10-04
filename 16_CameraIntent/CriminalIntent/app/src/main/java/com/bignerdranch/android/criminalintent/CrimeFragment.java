@@ -319,7 +319,7 @@ public class CrimeFragment extends Fragment {
             Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- ImageView set from the bitmap");
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity());
-            if(((BitmapDrawable)mPhotoView.getDrawable()).getBitmap() == null) {
+            if(((BitmapDrawable)mPhotoView.getDrawable()) == null) {
                 mPhotoView.setImageBitmap(bitmap);
             }
 
