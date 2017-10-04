@@ -57,23 +57,18 @@ class GalleryViewActivity : AppCompatActivity() {
         recyclerAdapter = GalleryAdapter(mutableListOf())
         recyclerView?.adapter = recyclerAdapter
         val files = intent.getStringArrayExtra(FILES)
+        val detector = FaceDetector.Builder(this@GalleryViewActivity)
+                .build()
+        this@GalleryViewActivity.detector = detector
+
         launch (CommonPool) {
             files.forEach {
                 val b = updatePhotoView(File(it))
                 bitmapArray.add(b)
-                launch(UI) {  recyclerAdapter?.loadPhoto(b) }
+                val face = if (detector.isOperational) detector.detect(Frame.Builder().setBitmap(b).build()) else SparseArray()
+                launch(UI) {  recyclerAdapter?.loadPhoto(b, face) }
             }
-            val detector = FaceDetector.Builder(this@GalleryViewActivity)
-                    .build()
-            this@GalleryViewActivity.detector = detector
-            bitmapArray.forEachIndexed  { index, b ->
-                launch(CommonPool) {
-                    Log.d("width of image", "${b.width}")
-                    (recyclerView?.getChildAt(index) as? FaceDetectImageView)?.apply {
-                        updateFaces(detector.detect(Frame.Builder().setBitmap(b).build()), b.width.toFloat(), b.height.toFloat())
-                    }
-                }
-            }
+
 
         }
 
@@ -89,15 +84,18 @@ class GalleryViewActivity : AppCompatActivity() {
 
 
     class GalleryAdapter (val files: MutableList<Bitmap?>): RecyclerView.Adapter<GalleryAdapter.ViewHolder>() {
+        val faces = ArrayList<SparseArray<Face>>()
         override fun getItemCount(): Int = this.files.size
 
-        fun loadPhoto(b: Bitmap) {
+        fun loadPhoto(b: Bitmap, face: SparseArray<Face>) {
             files.add(b)
+            faces.add(face)
             notifyDataSetChanged()
         }
 
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
             holder?.v?.setImageBitmap(files[position])
+            holder?.v?.updateFaces(faces[position], (files[position]?.width ?: 1).toFloat(),(files[position]?.height ?: 1).toFloat() )
         }
 
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) : ViewHolder{

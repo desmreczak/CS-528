@@ -27,15 +27,14 @@ class FaceDetectImageView(context: Context?, attrs: AttributeSet?) : android.sup
 
     fun updateFaces(faces: SparseArray<Face>, widthR: Float, heighR: Float) {
         this.faces = faces.clone()
-        this.widthR = width / widthR
-        this.heighR = height / heighR
-        invalidate()
+        this.widthR = widthR
+        this.heighR = heighR
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.save()
-        canvas?.scale(widthR, heighR)
+        canvas?.scale(width / widthR, height / heighR)
 
         for (i in 0 until faces.size()) {
             Log.d("face", "${width}")
