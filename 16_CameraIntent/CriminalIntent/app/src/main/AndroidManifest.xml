@@ -11,6 +11,8 @@
         android:required="false" />
 
     <application
+        android:largeHeap="true"
+        android:hardwareAccelerated="false"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,7 +21,8 @@
             android:name=".CrimePagerActivity"
             android:label="@string/app_name"
             android:parentActivityName=".CrimeListActivity"></activity>
-        <activity android:name=".CrimeListActivity">
+        <activity
+            android:name=".CrimeListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,7 +40,8 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".GalleryViewActivity"></activity>
+        <activity
+            android:name=".GalleryViewActivity"></activity>
     </application>
 
 </manifest>

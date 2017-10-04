@@ -17,7 +17,6 @@ class FaceDetectImageView(context: Context?, attrs: AttributeSet?) : android.sup
     private val BOX_STROKE_WIDTH = 30.0f
     private var widthR = 1.0F
     private var heighR = 1.0F
-    private var dirty = false
 
     init {
         mBoxPaint = Paint()
@@ -30,21 +29,18 @@ class FaceDetectImageView(context: Context?, attrs: AttributeSet?) : android.sup
         this.faces = faces.clone()
         this.widthR = width / widthR
         this.heighR = height / heighR
-        dirty = true
         invalidate()
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        if (!dirty) return
         canvas?.save()
         canvas?.scale(widthR, heighR)
 
         for (i in 0 until faces.size()) {
             Log.d("face", "${width}")
-            val face = faces[i]
-            if (face == null) continue
-            Log.d("face", "${face.position}")
+            val face = faces.valueAt(i)
+            Log.d("face", "postition ${face.position}")
             // Draws a circle at the position of the detected face, with the face's track id below.
             val x = (face.position.x + face.width / 2)
             val y = (face.position.y + face.height / 2)

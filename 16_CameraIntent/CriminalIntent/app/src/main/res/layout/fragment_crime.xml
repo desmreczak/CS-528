@@ -26,6 +26,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/crime_solved_label"/>
+
     <Button
         android:id="@+id/crime_suspect"
         android:layout_width="match_parent"
@@ -50,5 +51,16 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:text="Display Gallery for this crime" />
+
+    <CheckBox
+        android:id="@+id/face_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="50dp"
+        android:text="Enable Facial Recognition"
+        android:textAlignment="viewStart" />
 
 </LinearLayout>
