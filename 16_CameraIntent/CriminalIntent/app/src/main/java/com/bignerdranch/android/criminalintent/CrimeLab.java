@@ -67,7 +67,7 @@ public class CrimeLab {
     public List<Photo> getPhotos(String crimeId) {
         List<Photo> photos= new ArrayList<>();
 
-        CrimeCursorWrapper cursor = queryPhotos("crimeId = " + crimeId, null);
+        CrimeCursorWrapper cursor = queryPhotos("crimeId ='" + crimeId + "'", null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
