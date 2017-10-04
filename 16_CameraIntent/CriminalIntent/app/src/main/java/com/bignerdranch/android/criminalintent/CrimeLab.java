@@ -10,6 +10,7 @@ import com.bignerdranch.android.criminalintent.database.CrimeBaseHelper;
 import com.bignerdranch.android.criminalintent.database.CrimeCursorWrapper;
 
 import com.bignerdranch.android.criminalintent.database.CrimeDbSchema.CrimeTable;
+import com.bignerdranch.android.criminalintent.database.CrimeDbSchema.PhotoTable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,6 +43,12 @@ public class CrimeLab {
         mDatabase.insert(CrimeTable.NAME, null, values);
     }
 
+    public void addPhoto(Photo p) {
+        ContentValues values = getPhotoContent(p);
+
+        mDatabase.insert(CrimeTable.NAME, null, values);
+    }
+
     public List<Crime> getCrimes() {
         List<Crime> crimes = new ArrayList<>();
 
@@ -57,6 +64,21 @@ public class CrimeLab {
         return crimes;
     }
 
+    public List<Photo> getPhotos(String crimeId) {
+        List<Photo> photos= new ArrayList<>();
+
+        CrimeCursorWrapper cursor = queryPhotos("where crimeId = " + crimeId, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            photos.add(cursor.getPhoto());
+            cursor.moveToNext();
+        }
+        cursor.close();
+
+        return photos;
+    }
+
     public Crime getCrime(UUID id) {
         CrimeCursorWrapper cursor = queryCrimes(
                 CrimeTable.Cols.UUID + " = ?",
@@ -70,6 +92,24 @@ public class CrimeLab {
 
             cursor.moveToFirst();
             return cursor.getCrime();
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public Photo getPhoto(UUID id) {
+        CrimeCursorWrapper cursor = queryPhotos(
+                PhotoTable.Cols.UUID + " = ?",
+                new String[] { id.toString() }
+        );
+
+        try {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+
+            cursor.moveToFirst();
+            return cursor.getPhoto();
         } finally {
             cursor.close();
         }
@@ -95,6 +135,15 @@ public class CrimeLab {
                 new String[] { uuidString });
     }
 
+    public void updatePhotos(Photo photo) {
+        String uuidString = photo.getId().toString();
+        ContentValues values = getPhotoContent(photo);
+
+        mDatabase.update(PhotoTable.NAME, values,
+                PhotoTable.Cols.UUID + " = ?",
+                new String[] { uuidString });
+    }
+
     private static ContentValues getContentValues(Crime crime) {
         ContentValues values = new ContentValues();
         values.put(CrimeTable.Cols.UUID, crime.getId().toString());
@@ -106,9 +155,32 @@ public class CrimeLab {
         return values;
     }
 
+    private static ContentValues getPhotoContent(Photo photo) {
+        ContentValues values = new ContentValues();
+        values.put(PhotoTable.Cols.UUID, photo.getId().toString());
+        values.put(PhotoTable.Cols.CRIMEID, photo.getCrimeId());
+        values.put(PhotoTable.Cols.IMAGE, photo.getImage());
+
+        return values;
+    }
+
     private CrimeCursorWrapper queryCrimes(String whereClause, String[] whereArgs) {
         Cursor cursor = mDatabase.query(
                 CrimeTable.NAME,
+                null, // Columns - null selects all columns
+                whereClause,
+                whereArgs,
+                null, // groupBy
+                null, // having
+                null  // orderBy
+        );
+
+        return new CrimeCursorWrapper(cursor);
+    }
+
+    private CrimeCursorWrapper queryPhotos(String whereClause, String[] whereArgs) {
+        Cursor cursor = mDatabase.query(
+                PhotoTable.NAME,
                 null, // Columns - null selects all columns
                 whereClause,
                 whereArgs,

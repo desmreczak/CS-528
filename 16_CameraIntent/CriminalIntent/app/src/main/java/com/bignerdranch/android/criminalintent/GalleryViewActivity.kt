@@ -34,10 +34,9 @@ class GalleryViewActivity : AppCompatActivity() {
     companion object {
         private val FILES = "VIEW_FILES"
         private val IS_FD = "IS_FD"
-        fun newIntent(fromActivity: Activity, files: List<File>, isFD: Boolean): Intent {
+        fun newIntent(fromActivity: Activity, files: List<Bitmap>, isFD: Boolean): Intent {
             val intent = Intent(fromActivity, GalleryViewActivity::class.java)
-            return intent.putExtra(FILES, files.filter { it.exists() }
-                    .map { it.path }.toTypedArray())
+            return intent.putExtra(FILES, files.toTypedArray())
                     .putExtra(IS_FD, isFD)
         }
 
@@ -58,7 +57,7 @@ class GalleryViewActivity : AppCompatActivity() {
         recyclerView?.layoutManager = layoutManager
         recyclerAdapter = GalleryAdapter(mutableListOf())
         recyclerView?.adapter = recyclerAdapter
-        val files = intent.getStringArrayExtra(FILES)
+        val files = intent.getParcelableArrayExtra(FILES) as Array<Bitmap>
         val shouldDetect = intent.getBooleanExtra(IS_FD, false)
         val detector = FaceDetector.Builder(this@GalleryViewActivity)
                 .build()
@@ -66,10 +65,9 @@ class GalleryViewActivity : AppCompatActivity() {
 
         launch (CommonPool) {
             files.forEach {
-                val b = updatePhotoView(File(it))
-                bitmapArray.add(b)
-                val face = if (detector.isOperational && shouldDetect) detector.detect(Frame.Builder().setBitmap(b).build()) else SparseArray()
-                launch(UI) {  recyclerAdapter?.loadPhoto(b, face) }
+                bitmapArray.add(it)
+                val face = if (detector.isOperational && shouldDetect) detector.detect(Frame.Builder().setBitmap(it).build()) else SparseArray()
+                launch(UI) {  recyclerAdapter?.loadPhoto(it, face) }
             }
 
 

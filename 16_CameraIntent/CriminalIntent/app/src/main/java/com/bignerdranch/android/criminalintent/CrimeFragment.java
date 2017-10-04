@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -28,10 +30,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class CrimeFragment extends Fragment {
@@ -205,12 +209,15 @@ public class CrimeFragment extends Fragment {
         galleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                List<Photo> allPhotos = CrimeLab.get(getActivity()).getPhotos(mCrime.getId().toString());
+                List<Bitmap> bitmaps = new ArrayList<Bitmap>();
+                Bitmap bmp;
+                for (int i=0;i<allPhotos.size();i++) {
+                    bmp = BitmapFactory.decodeByteArray(allPhotos.get(i).getImage(), 0, allPhotos.get(i).getImage().length);
+                    bitmaps.add(bmp);
+                }
                 Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- In Photo Button Listener");
-                startActivity(GalleryViewActivity.Companion.newIntent(CrimeFragment.this.getActivity(), new ArrayList<File>(){{
-                    Log.d("DEBUG", "CrimeFragment.java -- onCreate()-- Adding Photos");
-                    add(mPhotoFile);
-                    add(mPhotoFile);
-                }}, noDetect));
+                startActivity(GalleryViewActivity.Companion.newIntent(CrimeFragment.this.getActivity(), bitmaps, noDetect));
             }
         });
 
@@ -311,6 +318,15 @@ public class CrimeFragment extends Fragment {
             Bitmap bitmap = PictureUtils.getScaledBitmap(
                     mPhotoFile.getPath(), getActivity());
             mPhotoView.setImageBitmap(bitmap);
+
+            Photo photo = new Photo();
+            ((BitmapDrawable)mPhotoView.getDrawable()).getBitmap();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] imageInByte = baos.toByteArray();
+            photo.setCrimeId(this.mCrime.getId().toString());
+            photo.setImage(imageInByte);
+            CrimeLab.get(getActivity()).addPhoto(photo);
         }
     }
 }
