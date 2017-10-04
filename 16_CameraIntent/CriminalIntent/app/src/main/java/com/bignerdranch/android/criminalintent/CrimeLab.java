@@ -46,7 +46,7 @@ public class CrimeLab {
     public void addPhoto(Photo p) {
         ContentValues values = getPhotoContent(p);
 
-        mDatabase.insert(CrimeTable.NAME, null, values);
+        mDatabase.insert(PhotoTable.NAME, null, values);
     }
 
     public List<Crime> getCrimes() {
